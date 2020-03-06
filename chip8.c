@@ -87,9 +87,13 @@ void emulate_cycle(struct CHIP8* self)
             self->pc++;
             break;
 
-        case 0x000E:
-            // TODO
-            self->pc++;
+        case 0x000E: // return from subroutine
+            // assign program counter from the top stack value
+            self->pc = self->stack[self->sp];
+            // decrement stack pointer
+            self->sp--;
+            // TODO: does the chip8 also clear that value on the stack?
+            // or is it assumed to be junk and ignored?
             break;
 
         default:
