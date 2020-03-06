@@ -204,7 +204,8 @@ void emulate_cycle(struct CHIP8* self)
         break;
 
     case 0xF000:
-        // TODO
+        switch (self->opcode & 0x00FF) {
+        }
         self->pc += 2;
         break;
     }
