@@ -205,6 +205,10 @@ void emulate_cycle(struct CHIP8* self)
 
     case 0xF000:
         switch (self->opcode & 0x00FF) {
+        case 0x0007: // store value of delay timer in 0r00
+            self->V[(self->opcode & 0x0F00) >> 8] = self->delay_timer;
+            break;
+        case 0x000A: // wait for keypress, store in 0r00
         }
         self->pc += 2;
         break;
