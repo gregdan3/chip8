@@ -224,6 +224,12 @@ void emulate_cycle(struct CHIP8* self)
                 self->memory[self->I + i] = self->V[i];
             }
             break;
+        case 0x0065: // copy memory starting from address I into registers
+                     // up to register 0r00
+            for (int i = 0; i <= ((self->opcode & 0x0F00) >> 8); i++) {
+                self->V[i] = self->memory[self->I + i];
+            }
+            break;
         }
         self->pc += 2;
         break;
