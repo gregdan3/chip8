@@ -102,8 +102,11 @@ void emulate_cycle(struct CHIP8* self)
         break;
 
     case 0x2000: // call subroutine
+        // put program counter on the stack
         self->stack[self->sp] = self->pc;
+        // increment stack pointer
         self->sp++;
+        // move stackpointer to specified location
         self->pc = self->opcode & 0x0FFF;
         break;
 
