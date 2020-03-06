@@ -215,6 +215,9 @@ void emulate_cycle(struct CHIP8* self)
         case 0x0018: // set sound timer to value of 0r00
             self->sound_timer = self->V[(self->opcode & 0x0F00) >> 8];
             break;
+        case 0x001E: // do value of I + value of 0r00, assign to I
+            self->I += self->V[(self->opcode & 0x0F00) >> 8];
+            break;
         }
         self->pc += 2;
         break;
