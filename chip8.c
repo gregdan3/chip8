@@ -193,6 +193,13 @@ void emulate_cycle(struct CHIP8* self)
             } else {
                 self->pc += 2;
             }
+        case 0x00A1: // skip next instruction if key in V0r00 is not pressed
+            if (self->key[self->V[self->opcode & 0x0F00 >> 8]] == 0) {
+                self->pc += 4;
+            } else {
+                self->pc += 2;
+            }
+            break;
         }
         break;
 
