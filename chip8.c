@@ -84,7 +84,8 @@ void emulate_cycle(struct CHIP8* self)
         switch (self->opcode & 0x000F) {
         case 0x0000: // display clear
             memset(self->gfx, 0x0, 64 * 32 * sizeof(char));
-            self->pc++;
+            // TODO: set draw byte?
+            self->pc += 2;
             break;
 
         case 0x000E: // return from subroutine
