@@ -129,8 +129,13 @@ void emulate_cycle(struct CHIP8* self)
         self->pc += 2;
         break;
 
-    case 0x5000:
-        // TODO
+    case 0x5000: // skip next instruction if Vx == Vy
+        if (self->V[(self->opcode & 0x0F00) >> 8]
+            == self->V[(self->opcode & 0x00F0) >> 4]) {
+            self->pc += 4;
+        } else {
+            self->pc += 2;
+        }
         self->pc += 2;
         break;
 
