@@ -97,9 +97,8 @@ void emulate_cycle(struct CHIP8* self)
             break;
         }
 
-    case 0x1000:
-        // TODO
-        self->pc += 2;
+    case 0x1000: // set the program counter to 0x0FFF of opcode
+        self->pc = self->opcode & 0x0FFF;
         break;
 
     case 0x2000: // call subroutine
