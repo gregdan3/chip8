@@ -56,11 +56,14 @@ void initialize(struct CHIP8* self)
 
 void load_game(struct CHIP8* self, char* game)
 {
+    int i = 0;
+    char c;
+
     FILE* file = fopen(game, "rb");
-    unsigned char* buffer;
-    // TODO: read from file
-    for (int i = 0; i < buffer; i++) {
-        self->memory[i + 0x200] = buffer[i];
+    while (!feof(file)) {
+        c = fgetc(file);
+        self->memory[i + 0x200] = c;
+        i += 1;
     }
 }
 
