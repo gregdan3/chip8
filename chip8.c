@@ -230,7 +230,11 @@ void set_keys(struct CHIP8* self)
 
 int main(int argc, char** argv)
 {
-    struct CHIP8 chip;
+    CHIP8 chip = {};
+    chip.initialize = initialize;
+    chip.load_game = load_game;
+    chip.emulate_cycle = emulate_cycle;
+    chip.set_keys = set_keys;
 
     setup_graphics();
     setup_input();
