@@ -139,8 +139,8 @@ void emulate_cycle(struct CHIP8* self)
         self->pc += 2;
         break;
 
-    case 0x6000:
-        // TODO
+    case 0x6000: // set register 0r00 to be value 00xx
+        self->V[(self->opcode & 0x0F00)] = self->opcode & 0x00FF;
         self->pc += 2;
         break;
 
