@@ -119,8 +119,13 @@ void emulate_cycle(struct CHIP8* self)
         }
         break;
 
-    case 0x4000:
-        // TODO
+    case 0x4000: // skip next instruction if Vx != kk
+        if ((self->V[(self->opcode & 0x0F00) >> 8])
+            != (self->opcode & 0x00FF)) {
+            self->pc += 4;
+        } else {
+            self->pc += 2;
+        }
         self->pc += 2;
         break;
 
