@@ -150,8 +150,31 @@ void emulate_cycle(struct CHIP8* self)
         break;
 
     case 0x8000:
-        // TODO
-        self->pc += 2;
+        printf("Unimplemented opcode!");
+        switch (self->opcode & 0x000F) {
+        case 0x0000:
+            break;
+        case 0x0001:
+            break;
+        case 0x0002:
+            break;
+        case 0x0003:
+            break;
+        case 0x0004:
+            break;
+        case 0x0005:
+            break;
+        case 0x0006:
+            break;
+        case 0x0007:
+            break;
+        case 0x000E:
+            break;
+        default:
+            printf("Unknown opcode [0x8000]: 0x%X\n", self->opcode);
+            break;
+        }
+        self->pc += 2; // breaks in above cases will make this occur
         break;
 
     case 0x9000:
