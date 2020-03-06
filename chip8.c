@@ -164,8 +164,8 @@ void emulate_cycle(struct CHIP8* self)
         self->pc += 2;
         break;
 
-    case 0xA000:
-        // TODO
+    case 0xA000: // assign I register to be the value at memory 0x0nnn
+        self->I = self->memory[self->opcode & 0x0FFF];
         self->pc += 2;
         break;
 
