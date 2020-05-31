@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL2/SDL.h>
 
 /* BIG thanks to Laurence Muller with his article
  * http://www.multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
@@ -20,7 +21,11 @@ void setup_input()
 
 void setup_graphics()
 {
-    // TODO
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+        printf("error initializing SDL: %s\n", SDL_GetError());
+    }
+    SDL_Window* win = SDL_CreateWindow("chip8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 64, 32, 0);
+    printf("Set graphics!");
 }
 
 void draw_graphics()
