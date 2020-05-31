@@ -311,6 +311,7 @@ void set_keys(struct CHIP8* self)
 int main(int argc, char** argv)
 {
     CHIP8 chip = {};
+    chip.draw_graphics = draw_graphics;
     chip.initialize = initialize;
     chip.load_game = load_game;
     chip.emulate_cycle = emulate_cycle;
@@ -325,7 +326,7 @@ int main(int argc, char** argv)
         chip.emulate_cycle(&chip);
 
         if (chip.draw_flag) {
-            draw_graphics();
+            draw_graphics(&chip);
         }
         chip.set_keys(&chip);
     };
