@@ -2,7 +2,7 @@ struct CHIP8;
 
 void setup_input();
 void setup_graphics();
-void draw_graphics();
+void draw_graphics(struct CHIP8* self);
 void initialize(struct CHIP8* self);
 void load_game(struct CHIP8* self, char* game);
 void emulate_cycle(struct CHIP8* self);
@@ -23,6 +23,7 @@ typedef struct CHIP8 {
     unsigned char draw_flag;    // do graphics?
 
     // attaching funcs to struct
+    void (*draw_graphics)(struct CHIP8*);
     void (*initialize)(struct CHIP8*);
     void (*load_game)(struct CHIP8*, char*);
     void (*emulate_cycle)(struct CHIP8*);
