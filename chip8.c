@@ -222,13 +222,13 @@ void emulate_cycle(struct CHIP8* self)
 
     case 0xE000:
         switch (self->opcode & 0x00FF) {
-        case 0x009E: // skip next instruction if key in VX is pressed
-                     // X is 0x0X00 in opcode
+        case 0x009E: // skip next instruction if key in V0r00 is pressed
             if (self->key[self->V[self->opcode & 0x0F00 >> 8]] != 0) {
                 self->pc += 4;
             } else {
                 self->pc += 2;
             }
+            break;
         case 0x00A1: // skip next instruction if key in V0r00 is not pressed
             if (self->key[self->V[self->opcode & 0x0F00 >> 8]] == 0) {
                 self->pc += 4;
@@ -236,8 +236,12 @@ void emulate_cycle(struct CHIP8* self)
                 self->pc += 2;
             }
             break;
+            // NOTE: possible to deduplicate the pc+= lines with
+            // +=2 in if, else eliminated, and +=2 after all cases
+        default:
+            printf("Unknown opcode [0xE000]: 0x%X\n", self->opcode);
+            break;
         }
-        break;
 
     case 0xF000:
         switch (self->opcode & 0x00FF) {
