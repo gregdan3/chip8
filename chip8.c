@@ -29,9 +29,17 @@ void setup_graphics()
     printf("Set graphics!");
 }
 
-void draw_graphics()
+void draw_graphics(struct CHIP8* self)
 {
-    // TODO
+    int x = 0;
+    int y = 0;
+
+    for (int i = 0; i < (64 * 32); i++) {
+        if (self->gfx[i] == 1) { // GFX is from a region of RAM...
+        }
+
+    }
+
 }
 
 void initialize(struct CHIP8* self)
