@@ -16,6 +16,7 @@
 
 void setup_input()
 {
+    printf("Set input!");
     // TODO
 }
 
@@ -77,6 +78,8 @@ void emulate_cycle(struct CHIP8* self)
 
     // fetch
     self->opcode = self->memory[self->pc] << 8 | self->memory[self->pc + 1];
+    printf("0x%X\n", self->opcode);
+    getchar(); // TODO: bad step function
     // collect first byte and second byte;
     // set first byte over by 8, filling in new byte with 0
     // merge first byte and second byte with boolean or
@@ -290,6 +293,7 @@ void emulate_cycle(struct CHIP8* self)
 void set_keys(struct CHIP8* self)
 {
     // TODO
+    printf("Keys set!");
 }
 
 int main(int argc, char** argv)
