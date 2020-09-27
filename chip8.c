@@ -63,6 +63,7 @@ void initialize(struct CHIP8* self)
     memset(self->memory, 0x0, 4096 * sizeof(char));
 
     // Prepare font
+    // TODO: what if hires font?
     for (int i = 0; i < 80; i++) {
         self->memory[i] = chip8_fontset[i];
     }
@@ -78,6 +79,7 @@ void load_game(struct CHIP8* self, char* game)
         c = fgetc(file);
         self->memory[i + 0x200] = c;
         i += 1;
+        // TODO: if file exceeds 4k - 0x200, tell user and fail
     }
 }
 
@@ -87,7 +89,7 @@ void emulate_cycle(struct CHIP8* self)
     // fetch
     self->opcode = self->memory[self->pc] << 8 | self->memory[self->pc + 1];
     printf("0x%X\n", self->opcode);
-    getchar(); // TODO: bad step function
+    printf("PC%hu\n", self->pc);
     // collect first byte and second byte;
     // set first byte over by 8, filling in new byte with 0
     // merge first byte and second byte with boolean or
@@ -229,7 +231,7 @@ void emulate_cycle(struct CHIP8* self)
         break;
 
     case 0xD000:
-        // TODO
+        // TODO: display sprite??
         break;
 
     case 0xE000:
@@ -255,6 +257,7 @@ void emulate_cycle(struct CHIP8* self)
             self->V[(self->opcode & 0x0F00) >> 8] = self->delay_timer;
             break;
         case 0x000A: // wait for keypress, store in 0r00
+            //TODO: implement
             break;
         case 0x0015: // set delay timer to value of 0r00
             self->delay_timer = self->V[(self->opcode & 0x0F00) >> 8];
@@ -302,12 +305,13 @@ void emulate_cycle(struct CHIP8* self)
 
 void set_keys(struct CHIP8* self)
 {
-    // TODO
-    printf("Keys set!");
+    getchar(); // TODO: bad step function
+    // TODO: listen for keyboard input
 }
 
 int main(int argc, char** argv)
 {
+    // TODO: argp or getopt
     CHIP8 chip = {};
     chip.draw_graphics = draw_graphics;
     chip.initialize = initialize;
