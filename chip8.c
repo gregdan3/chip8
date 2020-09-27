@@ -192,7 +192,10 @@ void emulate_cycle(struct CHIP8* self)
             self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] > (self->V[self->opcode & 0x00F0 >> 4]));
             self->V[(self->opcode & 0x0F00) >> 8] -= self->V[(self->opcode & 0x00F0) >> 4];
             break;
-        case 0x0006:
+        case 0x0006: // set VF if least-sig bit of 0r00 is 1, else 0, then 0r00 /= 2
+            // shortcut: set VF to least significant bit directly
+            self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] & 0x01);
+            self->V[(self->opcode & 0x0F00) >> 8] /= 2;
             break;
         case 0x0007:
             break;
