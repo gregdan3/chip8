@@ -222,7 +222,7 @@ void emulate_cycle(struct CHIP8* self)
         break;
 
     case 0xB000: // jump to 0nnn + V0 register's value
-        self->pc = (self->opcode & 0x0FFF) + self->V[0];
+        self->pc = (self->opcode & 0x0FFF) + self->V[0x0];
         break;
 
     case 0xC000: // put a random value (0-255 & 00xx) into 0r00
