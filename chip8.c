@@ -215,9 +215,8 @@ void emulate_cycle(struct CHIP8* self)
         }
         break;
 
-    case 0xA000: // assign I register to be the value at memory 0x0nnn
-        self->I = self->memory[self->opcode & 0x0FFF];
-        self->pc += 2;
+    case 0xA000: // assign I register to 0nnn
+        self->I = self->opcode & 0x0FFF;
         break;
 
     case 0xB000: // jump to 0nnn + V0 register's value
