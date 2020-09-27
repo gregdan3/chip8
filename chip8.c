@@ -92,7 +92,7 @@ void emulate_cycle(struct CHIP8* self)
     printf("PC%hu\n", self->pc);
     // collect first byte and second byte;
     // set first byte over by 8, filling in new byte with 0
-    // merge first byte and second byte with boolean or
+    // merge first byte and second byte with bitwise or
     // ex: ((0x2B << 8) | 0xAF) = 0x2BAF
 
 
