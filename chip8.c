@@ -1,8 +1,8 @@
 #include "chip8.h"
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL2/SDL.h>
 
 /* BIG thanks to Laurence Muller with his article
  * http://www.multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
@@ -25,7 +25,8 @@ void setup_graphics()
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
-    SDL_Window* win = SDL_CreateWindow("chip8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH * SCALE, SCREEN_HEIGHT * SCALE, 0);
+    SDL_Window* win = SDL_CreateWindow("chip8", SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH * SCALE, SCREEN_HEIGHT * SCALE, 0);
     printf("Set graphics!\n");
 }
 
@@ -37,9 +38,7 @@ void draw_graphics(struct CHIP8* self)
     for (int i = 0; i < (64 * 32); i++) {
         if (self->gfx[i] == 1) { // GFX is from a region of RAM...
         }
-
     }
-
 }
 
 void initialize(struct CHIP8* self)
@@ -95,12 +94,10 @@ void emulate_cycle(struct CHIP8* self)
     // merge first byte and second byte with bitwise or
     // ex: ((0x2B << 8) | 0xAF) = 0x2BAF
 
-
     // pre-emptively increment program counter
     self->pc += 2;
     // opcodes that assign it will overwrite this
     // opcodes that skip an instruction have their own += 2
-
 
     // decode
     switch (self->opcode & 0xF000) {
@@ -171,36 +168,47 @@ void emulate_cycle(struct CHIP8* self)
     case 0x8000:
         switch (self->opcode & 0x000F) {
         case 0x0000: // assign register 0r00 to value of register 00r0
-            self->V[(self->opcode & 0x0F00) >> 8] = self->V[(self->opcode & 0x00F0) >> 4];
+            self->V[(self->opcode & 0x0F00) >> 8]
+                = self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0001: // assign register 0r00 to 0r00 bitwise OR 00r0
-            self->V[(self->opcode & 0x0F00) >> 8] |= self->V[(self->opcode & 0x00F0) >> 4];
+            self->V[(self->opcode & 0x0F00) >> 8]
+                |= self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0002: // assign register 0r00 to 0r00 bitwise AND 00r0
-            self->V[(self->opcode & 0x0F00) >> 8] &= self->V[(self->opcode & 0x00F0) >> 4];
+            self->V[(self->opcode & 0x0F00) >> 8]
+                &= self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0003: // assign register 0r00 to 0r00 bitwise XOR 00r0
-            self->V[(self->opcode & 0x0F00) >> 8] ^= self->V[(self->opcode & 0x00F0) >> 4];
+            self->V[(self->opcode & 0x0F00) >> 8]
+                ^= self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0004: // sum 0r00 and 00r0, assign to 0r00, set carry if overflow
             printf("Partially implemented opcode 8rr7!\n");
             break;
         case 0x0005: // set VF if 0r00 > 00r0, then 0r00 -= 00r0
             // shortcut: comparisons return 1 for true and 0 for false
-            self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] > (self->V[self->opcode & 0x00F0 >> 4]));
-            self->V[(self->opcode & 0x0F00) >> 8] -= self->V[(self->opcode & 0x00F0) >> 4];
+            self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8]
+                > (self->V[self->opcode & 0x00F0 >> 4]));
+            self->V[(self->opcode & 0x0F00) >> 8]
+                -= self->V[(self->opcode & 0x00F0) >> 4];
             break;
-        case 0x0006: // set VF if least-sig bit of 0r00 is 1, else 0, then 0r00 /= 2
+        case 0x0006: // set VF if least-sig bit of 0r00 is 1, else 0, then 0r00
+                     // /= 2
             // shortcut: set VF to least significant bit directly
             self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] & 0x01);
             self->V[(self->opcode & 0x0F00) >> 8] /= 2;
             break;
         case 0x0007: // set VF if 0r00 > 00r0, then 0r00 = 00r0 - 0r00
             // same trick as 8rr5
-            self->V[0xF] = (self->V[self->opcode & 0x00F0 >> 4] > (self->V[self->opcode & 0x0F00 >> 8]));
-            self->V[(self->opcode & 0x0F00) >> 8] = self->V[(self->opcode & 0x00F0) >> 4] - self->V[(self->opcode & 0x0F00) >> 8];
+            self->V[0xF] = (self->V[self->opcode & 0x00F0 >> 4]
+                > (self->V[self->opcode & 0x0F00 >> 8]));
+            self->V[(self->opcode & 0x0F00) >> 8]
+                = self->V[(self->opcode & 0x00F0) >> 4]
+                - self->V[(self->opcode & 0x0F00) >> 8];
             break;
-        case 0x000E: // set VF if most-sig bit of 0r00 is 1, else 0, then 0r00 *= 2
+        case 0x000E: // set VF if most-sig bit of 0r00 is 1, else 0, then 0r00
+                     // *= 2
             self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] & 0x10);
             self->V[(self->opcode & 0x0F00) >> 8] *= 2;
             break;
@@ -257,7 +265,7 @@ void emulate_cycle(struct CHIP8* self)
             self->V[(self->opcode & 0x0F00) >> 8] = self->delay_timer;
             break;
         case 0x000A: // wait for keypress, store in 0r00
-            //TODO: implement
+            // TODO: implement
             break;
         case 0x0015: // set delay timer to value of 0r00
             self->delay_timer = self->V[(self->opcode & 0x0F00) >> 8];
@@ -269,7 +277,8 @@ void emulate_cycle(struct CHIP8* self)
             self->I += self->V[(self->opcode & 0x0F00) >> 8];
             break;
         case 0x0029: // I register is assigned address of char in register 0r00
-            self->I = self->V[(self->opcode & 0x0F00 >> 8)] * 5; // 0c00 is a char
+            self->I
+                = self->V[(self->opcode & 0x0F00 >> 8)] * 5; // 0c00 is a char
             break;
         case 0x0033:
             break;
