@@ -93,6 +93,13 @@ void emulate_cycle(struct CHIP8* self)
     // merge first byte and second byte with boolean or
     // ex: ((0x2B << 8) | 0xAF) = 0x2BAF
 
+
+    // pre-emptively increment program counter
+    self->pc += 2;
+    // opcodes that assign it will overwrite this
+    // opcodes that skip an instruction have their own += 2
+
+
     // decode
     switch (self->opcode & 0xF000) {
 
@@ -101,7 +108,6 @@ void emulate_cycle(struct CHIP8* self)
         case 0x0000: // display clear
             memset(self->gfx, 0x0, 64 * 32 * sizeof(char));
             // TODO: set draw byte?
-            self->pc += 2;
             break;
 
         case 0x000E: // return from subroutine
@@ -134,8 +140,6 @@ void emulate_cycle(struct CHIP8* self)
     case 0x3000: // skip next instruction if 0r00 == 00xx
         if ((self->V[(self->opcode & 0x0F00) >> 8])
             == (self->opcode & 0x00FF)) {
-            self->pc += 4;
-        } else {
             self->pc += 2;
         }
         break;
@@ -143,31 +147,23 @@ void emulate_cycle(struct CHIP8* self)
     case 0x4000: // skip next instruction if Vx != kk
         if ((self->V[(self->opcode & 0x0F00) >> 8])
             != (self->opcode & 0x00FF)) {
-            self->pc += 4;
-        } else {
             self->pc += 2;
         }
-        self->pc += 2;
         break;
 
     case 0x5000: // skip next instruction if Vx == Vy
         if (self->V[(self->opcode & 0x0F00) >> 8]
             == self->V[(self->opcode & 0x00F0) >> 4]) {
-            self->pc += 4;
-        } else {
             self->pc += 2;
         }
-        self->pc += 2;
         break;
 
     case 0x6000: // set register 0r00 to be value 00xx
         self->V[(self->opcode & 0x0F00)] = self->opcode & 0x00FF;
-        self->pc += 2;
         break;
 
     case 0x7000: // add value 00xx to value in register 0r00 and assign
         self->V[(self->opcode & 0x0F00) >> 8] += (self->opcode & 0x00FF);
-        self->pc += 2;
         break;
 
     case 0x8000:
@@ -210,17 +206,13 @@ void emulate_cycle(struct CHIP8* self)
             printf("Unknown opcode [0x8000]: 0x%X\n", self->opcode);
             break;
         }
-        self->pc += 2; // breaks in above cases will make this occur
         break;
 
     case 0x9000:
         if (self->V[(self->opcode & 0x0F00) >> 8]
             != self->V[(self->opcode & 0x00F0) >> 4]) {
-            self->pc += 4;
-        } else {
             self->pc += 2;
         }
-        self->pc += 2;
         break;
 
     case 0xA000: // assign I register to be the value at memory 0x0nnn
@@ -235,32 +227,24 @@ void emulate_cycle(struct CHIP8* self)
     case 0xC000: // put a random value 0-255 & 00nn into V0r00
         self->V[(self->opcode & 0x0F00)]
             = (rand() % 256) & (self->opcode & 0x00FF);
-        self->pc += 2;
         break;
 
     case 0xD000:
         // TODO
-        self->pc += 2;
         break;
 
     case 0xE000:
         switch (self->opcode & 0x00FF) {
         case 0x009E: // skip next instruction if key in V0r00 is pressed
             if (self->key[self->V[self->opcode & 0x0F00 >> 8]] != 0) {
-                self->pc += 4;
-            } else {
                 self->pc += 2;
             }
             break;
         case 0x00A1: // skip next instruction if key in V0r00 is not pressed
             if (self->key[self->V[self->opcode & 0x0F00 >> 8]] == 0) {
-                self->pc += 4;
-            } else {
                 self->pc += 2;
             }
             break;
-            // NOTE: possible to deduplicate the pc+= lines with
-            // +=2 in if, else eliminated, and +=2 after all cases
         default:
             printf("Unknown opcode [0xE000]: 0x%X\n", self->opcode);
             break;
@@ -300,7 +284,6 @@ void emulate_cycle(struct CHIP8* self)
             }
             break;
         }
-        self->pc += 2;
         break;
     }
 
