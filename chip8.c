@@ -197,7 +197,10 @@ void emulate_cycle(struct CHIP8* self)
             self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] & 0x01);
             self->V[(self->opcode & 0x0F00) >> 8] /= 2;
             break;
-        case 0x0007:
+        case 0x0007: // set VF if 0r00 > 00r0, then 0r00 = 00r0 - 0r00
+            // same trick as 8rr5
+            self->V[0xF] = (self->V[self->opcode & 0x00F0 >> 4] > (self->V[self->opcode & 0x0F00 >> 8]));
+            self->V[(self->opcode & 0x0F00) >> 8] = self->V[(self->opcode & 0x00F0) >> 4] - self->V[(self->opcode & 0x0F00) >> 8];
             break;
         case 0x000E:
             break;
