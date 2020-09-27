@@ -167,7 +167,6 @@ void emulate_cycle(struct CHIP8* self)
         break;
 
     case 0x8000:
-        printf("Unimplemented opcode!");
         switch (self->opcode & 0x000F) {
         case 0x0000: // assign register 0r00 to value of register 00r0
             self->V[(self->opcode & 0x0F00) >> 8] = self->V[(self->opcode & 0x00F0) >> 4];
@@ -182,6 +181,7 @@ void emulate_cycle(struct CHIP8* self)
             self->V[(self->opcode & 0x0F00) >> 8] ^= self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0004: // sum 0r00 and 00r0, assign to 0r00, set carry if overflow
+            printf("Partially implemented opcode 8rr7!\n");
             break;
         case 0x0005: // set VF if 0r00 > 00r0, then 0r00 -= 00r0
             // shortcut: comparisons return 1 for true and 0 for false
