@@ -16,7 +16,7 @@
 
 void setup_input()
 {
-    printf("Set input!");
+    printf("Set input!\n");
     // TODO
 }
 
@@ -26,7 +26,7 @@ void setup_graphics()
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
     SDL_Window* win = SDL_CreateWindow("chip8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH * SCALE, SCREEN_HEIGHT * SCALE, 0);
-    printf("Set graphics!");
+    printf("Set graphics!\n");
 }
 
 void draw_graphics(struct CHIP8* self)
