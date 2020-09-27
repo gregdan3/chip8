@@ -173,7 +173,8 @@ void emulate_cycle(struct CHIP8* self)
     case 0x8000:
         printf("Unimplemented opcode!");
         switch (self->opcode & 0x000F) {
-        case 0x0000:
+        case 0x0000: // assign register 0r00 to value of register 00r0
+            self->V[(self->opcode & 0x0F00) >> 8] = self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0001:
             break;
