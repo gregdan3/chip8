@@ -202,7 +202,9 @@ void emulate_cycle(struct CHIP8* self)
             self->V[0xF] = (self->V[self->opcode & 0x00F0 >> 4] > (self->V[self->opcode & 0x0F00 >> 8]));
             self->V[(self->opcode & 0x0F00) >> 8] = self->V[(self->opcode & 0x00F0) >> 4] - self->V[(self->opcode & 0x0F00) >> 8];
             break;
-        case 0x000E:
+        case 0x000E: // set VF if most-sig bit of 0r00 is 1, else 0, then 0r00 *= 2
+            self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] & 0x10);
+            self->V[(self->opcode & 0x0F00) >> 8] *= 2;
             break;
         default:
             printf("Unknown opcode [0x8000]: 0x%X\n", self->opcode);
