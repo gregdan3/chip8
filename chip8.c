@@ -144,14 +144,14 @@ void emulate_cycle(struct CHIP8* self)
         }
         break;
 
-    case 0x4000: // skip next instruction if Vx != kk
+    case 0x4000: // skip next instruction if 0r00 != 00xx
         if ((self->V[(self->opcode & 0x0F00) >> 8])
             != (self->opcode & 0x00FF)) {
             self->pc += 2;
         }
         break;
 
-    case 0x5000: // skip next instruction if Vx == Vy
+    case 0x5000: // skip next instruction if 0r00 == 00r0
         if (self->V[(self->opcode & 0x0F00) >> 8]
             == self->V[(self->opcode & 0x00F0) >> 4]) {
             self->pc += 2;
@@ -162,7 +162,7 @@ void emulate_cycle(struct CHIP8* self)
         self->V[(self->opcode & 0x0F00) >> 8] = self->opcode & 0x00FF;
         break;
 
-    case 0x7000: // add value 00xx to value in register 0r00 and assign
+    case 0x7000: // sum register 0r00 with 00xx and assign to 0r00
         self->V[(self->opcode & 0x0F00) >> 8] += (self->opcode & 0x00FF);
         break;
 
@@ -181,7 +181,7 @@ void emulate_cycle(struct CHIP8* self)
         case 0x0003: // assign register 0r00 to 0r00 bitwise XOR 00r0
             self->V[(self->opcode & 0x0F00) >> 8] ^= self->V[(self->opcode & 0x00F0) >> 4];
             break;
-        case 0x0004:
+        case 0x0004: // sum 0r00 and 00r0, assign to 0r00, set carry if overflow
             break;
         case 0x0005: // set VF if 0r00 > 00r0, then 0r00 -= 00r0
             // shortcut: comparisons return 1 for true and 0 for false
@@ -208,7 +208,7 @@ void emulate_cycle(struct CHIP8* self)
         }
         break;
 
-    case 0x9000:
+    case 0x9000: // skip next instruction if 0r00 != 00r0
         if (self->V[(self->opcode & 0x0F00) >> 8]
             != self->V[(self->opcode & 0x00F0) >> 4]) {
             self->pc += 2;
@@ -224,7 +224,7 @@ void emulate_cycle(struct CHIP8* self)
         self->pc = (self->opcode & 0x0FFF) + self->V[0];
         break;
 
-    case 0xC000: // put a random value 0-255 & 00nn into V0r00
+    case 0xC000: // put a random value (0-255 & 00xx) into 0r00
         self->V[(self->opcode & 0x0F00)]
             = (rand() % 256) & (self->opcode & 0x00FF);
         break;
@@ -235,7 +235,7 @@ void emulate_cycle(struct CHIP8* self)
 
     case 0xE000:
         switch (self->opcode & 0x00FF) {
-        case 0x009E: // skip next instruction if key in V0r00 is pressed
+        case 0x009E: // skip next instruction if key in 0r00 is pressed
             if (self->key[self->V[self->opcode & 0x0F00 >> 8]] != 0) {
                 self->pc += 2;
             }
@@ -263,7 +263,7 @@ void emulate_cycle(struct CHIP8* self)
         case 0x0018: // set sound timer to value of 0r00
             self->sound_timer = self->V[(self->opcode & 0x0F00) >> 8];
             break;
-        case 0x001E: // do value of I + value of 0r00, assign to I
+        case 0x001E: // I register is assigned sum of I and 0r00
             self->I += self->V[(self->opcode & 0x0F00) >> 8];
             break;
         case 0x0029: // I register is assigned address of char in register 0r00
