@@ -267,7 +267,8 @@ void emulate_cycle(struct CHIP8* self)
         case 0x001E: // do value of I + value of 0r00, assign to I
             self->I += self->V[(self->opcode & 0x0F00) >> 8];
             break;
-        case 0x0029:
+        case 0x0029: // I register is assigned address of char in register 0r00
+            self->I = self->V[(self->opcode & 0x0F00 >> 8)] * 5; // 0c00 is a char
             break;
         case 0x0033:
             break;
