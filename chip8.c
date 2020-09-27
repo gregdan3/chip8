@@ -182,7 +182,8 @@ void emulate_cycle(struct CHIP8* self)
         case 0x0002: // assign register 0r00 to 0r00 bitwise AND 00r0
             self->V[(self->opcode & 0x0F00) >> 8] &= self->V[(self->opcode & 0x00F0) >> 4];
             break;
-        case 0x0003:
+        case 0x0003: // assign register 0r00 to 0r00 bitwise XOR 00r0
+            self->V[(self->opcode & 0x0F00) >> 8] ^= self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0004:
             break;
