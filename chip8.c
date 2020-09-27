@@ -187,7 +187,10 @@ void emulate_cycle(struct CHIP8* self)
             break;
         case 0x0004:
             break;
-        case 0x0005:
+        case 0x0005: // set VF if 0r00 > 00r0, then 0r00 -= 00r0
+            // shortcut: comparisons return 1 for true and 0 for false
+            self->V[0xF] = (self->V[self->opcode & 0x0F00 >> 8] > (self->V[self->opcode & 0x00F0 >> 4]));
+            self->V[(self->opcode & 0x0F00) >> 8] -= self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0006:
             break;
