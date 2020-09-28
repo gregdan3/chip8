@@ -122,6 +122,7 @@ void emulate_cycle(struct CHIP8* self)
             printf("Unknown opcode [0x0000]: 0x%X\n", self->opcode);
             break;
         }
+        break;
 
     case 0x1000: // set the program counter to 0x0FFF of opcode
         self->pc = self->opcode & 0x0FFF;
