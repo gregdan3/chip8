@@ -185,7 +185,11 @@ void emulate_cycle(struct CHIP8* self)
                 ^= self->V[(self->opcode & 0x00F0) >> 4];
             break;
         case 0x0004: // sum 0r00 and 00r0, assign to 0r00, set carry if overflow
-            printf("Partially implemented opcode 8rr7!\n");
+            self->V[(self->opcode & 0x0F00) >> 8]
+                += self->V[(self->opcode & 0x00F0) >> 4];
+            if (self->V[(self->opcode & 0x0F00) >> 8]) {
+              self->V[0xF] = 1;
+            }
             break;
         case 0x0005: // set VF if 0r00 > 00r0, then 0r00 -= 00r0
             // shortcut: comparisons return 1 for true and 0 for false
