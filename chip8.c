@@ -325,7 +325,18 @@ void set_keys(struct CHIP8* self)
 
 int main(int argc, char** argv)
 {
+    char* game;
     // TODO: argp or getopt
+    if (argc > 2) {
+        fprintf(stderr, "Too many arguments! Provide one ROM filename.");
+        exit(1);
+    } else if (argc < 2) {
+        fprintf(stderr, "No game provided! Provide one ROM filename.");
+        exit(1);
+    } else {
+        game = argv[1];
+    }
+
     CHIP8 chip = {};
     chip.draw_graphics = draw_graphics;
     chip.initialize = initialize;
@@ -336,7 +347,7 @@ int main(int argc, char** argv)
     setup_graphics();
     setup_input();
     chip.initialize(&chip);
-    chip.load_game(&chip, "TODO");
+    chip.load_game(&chip, game);
 
     while (1) {
         chip.emulate_cycle(&chip);
