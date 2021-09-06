@@ -1,8 +1,21 @@
-build:
-	gcc chip8.c -o chip8 `sdl2-config --libs --cflags` -ggdb3 -O0 -lm
+.PHONY: clean
 
-debug:
-	gcc chip8.c -o chip8 -g `sdl2-config --libs --cflags` -ggdb3 -O0 -lm
+IN=chip8.c
+OUT=chip8
+OUTD=chip8d
+
+CFLAGS=-lm -O3
+DEBUGFLAGS=-g -ggdb3 -O0
+# later flag overrides
+
+build: ${OUT}
+debug: ${OUTD}
+all: ${OUT} ${OUTD}
+
+${OUT}: ${IN}
+	gcc ${IN} -o ${OUT} ${CFLAGS}
+${OUTD}: ${IN}
+	gcc ${IN} -o ${OUTD} ${CFLAGS} ${DEBUGFLAGS}
 
 clean:
-	rm chip8
+	rm -f ${OUT} ${OUTD}
