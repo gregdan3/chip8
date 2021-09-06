@@ -1,5 +1,4 @@
 #include "chip8.h"
-#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,12 +21,8 @@ void setup_input()
 
 void setup_graphics()
 {
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        printf("error initializing SDL: %s\n", SDL_GetError());
-    }
-    SDL_Window* win = SDL_CreateWindow("chip8", SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH * SCALE, SCREEN_HEIGHT * SCALE, 0);
-    printf("Set graphics!\n");
+    printf("Setting graphics!\n");
+    printf("\033[H"); // return to home
 }
 
 void draw_graphics(struct CHIP8* self)
@@ -35,9 +30,15 @@ void draw_graphics(struct CHIP8* self)
     int x = 0;
     int y = 0;
 
-    for (int i = 0; i < (64 * 32); i++) {
-        if (self->gfx[i] == 1) { // GFX is from a region of RAM...
+    // TODO: nested for loop, more clarity?
+    for (int i = 0; i < (SCREEN_WIDTH * SCREEN_HEIGHT); i++) {
+        x++;
+        if (x == SCREEN_WIDTH) { // printed 0 to n-1, n items
+            x = 0;
+            y++;
         }
+        printf(self->gfx[i] ? "\033[7m  \033[m" : "  ");
+        // inverted tile or empty
     }
 }
 
