@@ -1,0 +1,6 @@
+chip8
+chip8d
+
+*.ch8
+*.hex
+.ccls-cache/
