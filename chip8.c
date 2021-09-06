@@ -45,26 +45,26 @@ void draw_graphics(struct CHIP8* self)
 void initialize(struct CHIP8* self)
 {
     // Initial state
-    self->pc = 0x200;
+    self->pc = PC_START;
     self->opcode = 0;
     self->I = 0;
     self->sp = 0;
 
     // Clear display
-    memset(self->gfx, 0x0, 64 * 32 * sizeof(char));
+    memset(self->gfx, 0x0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(char));
 
     // Clear stack
-    memset(self->stack, 0x0, 16 * sizeof(short));
+    memset(self->stack, 0x0, STACK_SIZE * sizeof(short));
 
     // Clear registers
-    memset(self->V, 0x0, 16 * sizeof(char));
+    memset(self->V, 0x0, REG_COUNT * sizeof(char));
 
     // Clear memory
-    memset(self->memory, 0x0, 4096 * sizeof(char));
+    memset(self->memory, 0x0, MEMORY_SIZE * sizeof(char));
 
     // Prepare font
     // TODO: what if hires font?
-    for (int i = 0; i < 80; i++) {
+    for (int i = 0; i < LORES_FONT; i++) {
         self->memory[i] = chip8_fontset[i];
     }
 }
@@ -77,7 +77,7 @@ void load_game(struct CHIP8* self, char* game)
     FILE* file = fopen(game, "rb");
     while (!feof(file)) {
         c = fgetc(file);
-        self->memory[i + 0x200] = c;
+        self->memory[i + PC_START] = c;
         i += 1;
         // TODO: if file exceeds 4k - 0x200, tell user and fail
     }
@@ -85,11 +85,10 @@ void load_game(struct CHIP8* self, char* game)
 
 void emulate_cycle(struct CHIP8* self)
 {
-
     // fetch
     self->opcode = self->memory[self->pc] << 8 | self->memory[self->pc + 1];
-    printf("0x%X\n", self->opcode);
-    printf("PC%hu\n", self->pc);
+    printf("0x%.4X\n", self->opcode);
+    printf("PC @ 0x%.4X\n", self->pc);
     // collect first byte and second byte;
     // set first byte over by 8, filling in new byte with 0
     // merge first byte and second byte with bitwise or
@@ -106,7 +105,7 @@ void emulate_cycle(struct CHIP8* self)
     case 0x0000: // two opcodes cannot be told apart by above
         switch (self->opcode & 0x000F) {
         case 0x0000: // display clear
-            memset(self->gfx, 0x0, 64 * 32 * sizeof(char));
+            memset(self->gfx, 0x0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(char));
             // TODO: set draw byte?
             break;
 

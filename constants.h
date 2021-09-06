@@ -1,11 +1,16 @@
 enum {
+    PC_START = 0x200,
     SCREEN_WIDTH = 64,
     SCREEN_HEIGHT = 32,
     MEMORY_SIZE = 4096,
-    SCALE = 10
+    REG_COUNT = 16,
+    KEY_COUNT = 16,
+    STACK_SIZE = 16,
+    LORES_FONT = 80,
+    HIRES_FONT = 160
 };
 
-unsigned char chip8_fontset[80] = {
+unsigned char chip8_fontset[LORES_FONT] = {
     /* this is a clever trick
      * the bits are used to print the characters
      * 4 bits wide (notice all end in 0) and 5 high
@@ -28,7 +33,7 @@ unsigned char chip8_fontset[80] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-unsigned char chip8_fontset_hires[160] = {
+unsigned char chip8_fontset_hires[HIRES_FONT] = {
     0x7C, 0x82, 0x82, 0x82, 0x82, 0x82, 0x82, 0x82, 0x7C, 0x00, // 0
     0x08, 0x18, 0x38, 0x08, 0x08, 0x08, 0x08, 0x08, 0x3C, 0x00, // 1
     0x7C, 0x82, 0x02, 0x02, 0x04, 0x18, 0x20, 0x40, 0xFE, 0x00, // 2
